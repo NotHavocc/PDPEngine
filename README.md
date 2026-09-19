@@ -42,12 +42,12 @@ these are the commands used for compiling the .py project into .exe (or the resp
 \
 **windows**
 ```
-pyinstaller --noconfirm --onedir --windowed --name "PDPEngine" --add-data "assets;assets" --hidden-import PyQt6.QtMultimedia main.pyw
+pyinstaller --noconfirm --onefile --windowed --name "PDPEngine" --add-data "assets;assets" --hidden-import PyQt6.QtMultimedia main.pyw
 ```
 \
 **macOS/linux**
 ```
-pyinstaller --noconfirm --onedir --windowed --name "PDPEngine" --add-data "assets:assets" --hidden-import PyQt6.QtMultimedia main.pyw
+pyinstaller --noconfirm --onefile --windowed --name "PDPEngine" --add-data "assets:assets" --hidden-import PyQt6.QtMultimedia main.pyw
 ```
 
 
