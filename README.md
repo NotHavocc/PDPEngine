@@ -4,7 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/open_source-with_%3C3-blue)\
 A cross-platform desktop pet engine derived from [PinkDesktopPet](https://gtihub.com/NotHavocc/PinkDesktopPet) \
 \
-[Download](https://github.com/NotHavocc/PDPEngine/edit/main/README.md#download)
+[Download](https://github.com/NotHavocc/PDPEngine#download)
 [Documentation](https://github.com/NotHavocc/PDPEngine/blob/main/docs/README.md)
 > [!NOTE]
 > if youre using Windows: the settings are at the right side of the taskbar, where the wifi icon is and etc. by default its hidden behind the arrow thing, click on it and youll see the icon
