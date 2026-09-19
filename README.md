@@ -1,10 +1,14 @@
-# PDPEngine <img src="https://cdn.discordapp.com/attachments/1515312988989689908/1550888660537315428/logo.png?ex=6aaff91e&is=6aaea79e&hm=247abec053d6fc02b1f86f002cf84230ecf8975cd9c33210b66bbf23d1d9fb70&" width="150" align="left">
+# PDPEngine <img src="https://cdn.discordapp.com/attachments/1515312988989689908/1550888660537315428/logo.png?ex=6aaff91e&is=6aaea79e&hm=247abec053d6fc02b1f86f002cf84230ecf8975cd9c33210b66bbf23d1d9fb70&" width="100" align="left">
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/NotHavocc/PDPEngine/total)
 ![GitHub Release](https://img.shields.io/github/v/release/NotHavocc/PDPEngine)
 ![Static Badge](https://img.shields.io/badge/open_source-with_%3C3-blue)\
-A cross-platform desktop pet engine derived from [PinkDesktopPet](https://gtihub.com/NotHavocc/PinkDesktopPet) 
+A cross-platform desktop pet engine derived from [PinkDesktopPet](https://gtihub.com/NotHavocc/PinkDesktopPet) \
+\
+[Download](https://github.com/NotHavocc/PDPEngine#download)
+[Documentation](https://github.com/NotHavocc/PDPEngine/blob/main/docs/README.md)
 > [!NOTE]
 > if youre using Windows: the settings are at the right side of the taskbar, where the wifi icon is and etc. by default its hidden behind the arrow thing, click on it and youll see the icon
+
 
 ## download
 
@@ -38,12 +42,12 @@ these are the commands used for compiling the .py project into .exe (or the resp
 \
 **windows**
 ```
-pyinstaller --noconfirm --onedir --windowed --name "PDPEngine" --add-data "assets;assets" --hidden-import PyQt6.QtMultimedia main.pyw
+pyinstaller --noconfirm --onefile --windowed --name "PDPEngine" --add-data "assets;assets" --hidden-import PyQt6.QtMultimedia main.pyw
 ```
 \
 **macOS/linux**
 ```
-pyinstaller --noconfirm --onedir --windowed --name "PDPEngine" --add-data "assets:assets" --hidden-import PyQt6.QtMultimedia main.pyw
+pyinstaller --noconfirm --onefile --windowed --name "PDPEngine" --add-data "assets:assets" --hidden-import PyQt6.QtMultimedia main.pyw
 ```
 
 
