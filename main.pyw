@@ -1,4 +1,4 @@
-# PDPEngine v1.0.0, created in 19.9.2026. by nothavoc
+# PDPEngine v1.1.0, created in 19.9.2026. by nothavoc
 
 import sys
 import os
@@ -344,15 +344,23 @@ class AppManager(QObject):
         self.settings.sync()
 
     def open_pet_maker(self):
+        for w in self.windows:
+            w.set_activity_paused(True)
         dialog = PetMakerDialog()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             new_pet = getattr(dialog, 'new_pet_name', None)
             if new_pet:
                 self.spawn_pet(new_pet)
+        for w in self.windows:
+            w.set_activity_paused(False)
 
     def open_settings(self):
-        dialog = SettingsDialog(self.active_window, manager=self)
+        for w in self.windows:
+            w.set_activity_paused(True)
+        dialog = SettingsDialog(None, manager=self)
         dialog.exec()
+        for w in self.windows:
+            w.set_activity_paused(False)
 
     def export_active_pet(self):
         if not self.active_window or not self.active_window.pet_loader:
@@ -650,7 +658,9 @@ class FloatingMediaWindow(QWidget):
     def check_mouse_hover(self):
         if not hasattr(self, 'pet_loader') or self.pet_loader is None: 
             return
-        if self.is_dragging: return 
+        if self.is_dragging: return
+        if QApplication.mouseButtons() != Qt.MouseButton.NoButton:
+            return
         if self.petting_cooldown_active: return
         if self.state == 'walking': return
         if not self.pet_loader.features.get("petting_enabled", True): return
@@ -714,6 +724,17 @@ class FloatingMediaWindow(QWidget):
 
     def end_cooldown(self):
         self.petting_cooldown_active = False
+        
+    def set_activity_paused(self, paused):
+        if paused:
+            self.state_timer.stop()
+            self.move_timer.stop()
+            self.hover_timer.stop()
+            self.wandering = False
+            self.go_idle(skip_special=True)
+        else:
+            self.hover_timer.start(50)
+            self.state_timer.start(random.randint(3000, 8000))
 
     def spawn_particle(self):
         if not self.particle_pixmap: return
@@ -792,6 +813,7 @@ class FloatingMediaWindow(QWidget):
         self.state = 'idle'
         self.wandering = False
         self.idle_pos = self.pos()
+        self.base_pos = self.pos()
         self.move_timer.stop()
         
         if skip_special:
@@ -845,7 +867,7 @@ class FloatingMediaWindow(QWidget):
         self.set_media(self.pet_loader.get_sprite(self.direction, 'idle'))
         self.state = 'walking'
         self.wandering = True
-        self.move_timer.start(16)
+        self.move_timer.start(30)
         self.state_timer.start(random.randint(4000, 9000))
     
     def step_toward_target(self):
@@ -863,8 +885,9 @@ class FloatingMediaWindow(QWidget):
 class SettingsDialog(QDialog):
     def __init__(self, parent=None, manager=None):
         super().__init__(parent)
-        self.target = parent
         self.manager = manager or (parent.app_manager if parent and hasattr(parent, 'app_manager') else None)
+        parent = parent or (self.manager.active_window if self.manager else None) 
+        self.target = parent
         self.setWindowTitle("PDPEngine Settings")
         self.setFixedSize(700, 500)
         self.setStyleSheet("""
@@ -970,7 +993,7 @@ class SettingsDialog(QDialog):
         title.setStyleSheet("font-size: 28px; font-weight: bold; color: #ff8a90; margin-bottom: 5px;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter); layout.addWidget(title)
         
-        version = QLabel("Version 1.0.0"); version.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        version = QLabel("Version 1.1.0"); version.setAlignment(Qt.AlignmentFlag.AlignCenter)
         version.setStyleSheet("color: #aaaaaa;"); layout.addWidget(version)
         
         desc = QLabel("A cross-platform desktop pet engine\n Derived from PinkDesktopPet \nCreated by nothavoc, 2026.")
@@ -1250,7 +1273,7 @@ class SettingsDialog(QDialog):
         self.pet_combo.blockSignals(False)
 
     def open_maker(self):
-        dialog = PetMakerDialog(self.target if self.target else self.parent())
+        dialog = PetMakerDialog(None)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.refresh_pet_combo(select_name=getattr(dialog, 'new_pet_name', None))
             if self.manager:
@@ -1263,7 +1286,7 @@ class SettingsDialog(QDialog):
         t = self.target if self.target else self.parent()
         if t and hasattr(t, 'pet_loader') and t.pet_loader:
             current_pet = t.pet_loader.pet_name
-            dialog = PetMakerDialog(t, edit_pet_name=current_pet)
+            dialog = PetMakerDialog(None, edit_pet_name=current_pet)
             if dialog.exec() == QDialog.DialogCode.Accepted:
                 new_pet_name = getattr(dialog, 'new_pet_name', current_pet)
                 self.refresh_pet_combo(select_name=new_pet_name)
@@ -1936,7 +1959,7 @@ class PetMakerDialog(QDialog):
             config = {
                 "name": pet_name_raw, 
                 "author": self.author_input.text().strip() or "Unknown", 
-                "version": "1.0",
+                "version": "1.1",
                 "default_scale": self.scale_input.value(),
                 "scaling_type": "nearest" if self.scaling_type_combo.currentIndex() == 0 else "smooth",
                 "sprites": {}, 
